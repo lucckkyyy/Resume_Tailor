@@ -160,9 +160,9 @@ def run():
     print("Loading master resume…")
     resume_text = g.read_resume_text(config.RESUME_DOC_ID)
 
-    github_username = os.environ.get("GITHUB_USERNAME", "").strip()
-    if github_username:
-        projects_text = gh.fetch_projects(github_username)
+    GH_USERNAME = os.environ.get("GH_USERNAME", "").strip()
+    if GH_USERNAME:
+        projects_text = gh.fetch_projects(GH_USERNAME)
         if projects_text:
             resume_text = resume_text + "\n\n" + projects_text
             print("  GitHub projects appended to resume context.")
