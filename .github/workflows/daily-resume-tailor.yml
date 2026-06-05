@@ -1,1 +1,57 @@
+name: Daily Resume Tailor + Auto-Apply
 
+on:
+  schedule:
+    - cron: "0 12 * * 1-5"
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium
+
+      - name: Run
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RESUME_DOC_ID: ${{ secrets.RESUME_DOC_ID }}
+          SEARCH_KEYWORDS: ${{ secrets.SEARCH_KEYWORDS }}
+          SEARCH_LOCATION: ${{ secrets.SEARCH_LOCATION }}
+          MAX_JOBS_PER_SOURCE: ${{ secrets.MAX_JOBS_PER_SOURCE }}
+          MIN_SCORE_TO_PREPARE: ${{ secrets.MIN_SCORE_TO_PREPARE }}
+          MIN_SCORE_TO_AUTOAPPLY: ${{ secrets.MIN_SCORE_TO_AUTOAPPLY }}
+          AUTO_APPLY: ${{ secrets.AUTO_APPLY }}
+          LINKEDIN_COOKIE: ${{ secrets.LINKEDIN_COOKIE }}
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}
+          APPLICANT_FIRST_NAME: ${{ secrets.APPLICANT_FIRST_NAME }}
+          APPLICANT_LAST_NAME: ${{ secrets.APPLICANT_LAST_NAME }}
+          APPLICANT_PHONE: ${{ secrets.APPLICANT_PHONE }}
+          APPLICANT_LINKEDIN_URL: ${{ secrets.APPLICANT_LINKEDIN_URL }}
+          APPLICANT_GPA: ${{ secrets.APPLICANT_GPA }}
+          APPLICANT_GRADUATION_DATE: ${{ secrets.APPLICANT_GRADUATION_DATE }}
+          APPLICANT_DEGREE: ${{ secrets.APPLICANT_DEGREE }}
+          APPLICANT_UNIVERSITY: ${{ secrets.APPLICANT_UNIVERSITY }}
+          APPLICANT_AUTHORIZED_US: ${{ secrets.APPLICANT_AUTHORIZED_US }}
+          APPLICANT_NEEDS_SPONSORSHIP: ${{ secrets.APPLICANT_NEEDS_SPONSORSHIP }}
+        run: python main.py
