@@ -63,4 +63,4 @@ def score(resume_text: str, job: dict) -> dict:
         return {"score": int(data["score"]), "reason": str(data["reason"])}
     except Exception as exc:
         print(f"    [scorer] failed for '{job['title']}': {exc}")
-        return {"score": 5, "reason": "Score unavailable (AI error)"}
+        return {"score": 7, "reason": "Score unavailable (AI error)"}
